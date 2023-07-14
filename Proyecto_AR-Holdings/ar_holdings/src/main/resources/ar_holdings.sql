@@ -102,4 +102,5 @@ insert into Empleados (nombre,apellido1,apellido2,puesto,fecha_ingreso,salario) 
 ('Juan','González','Pérez','contabilidad','2011-10-09','3800.00'),
 ('Laura','Fernández','Ramírez','marketing','2009-05-12','4200.00'),
 ('Pedro','Sánchez','Vargas','administracion','2021-12-06','3000.00'),
+('Allan','Soza','Artavia','desarrollador','2004-12-03','3000.00'),
 ('Ana','Martínez','Torres','ventas','2000-08-01','3500.00');
