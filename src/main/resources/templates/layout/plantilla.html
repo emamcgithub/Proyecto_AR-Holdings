@@ -15,7 +15,8 @@
     <body>
 
         <header th:fragment="header" class="header">
-            <nav class="navbar navbar-expand-sm navbar-dark bg-dark p-0">
+            <!-- <nav class="navbar navbar-expand-sm navbar-dark bg-dark p-0"> -->
+                <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #1693a5; /* Reemplaza bg-warning con el color hexadecimal #FFC107 */ p-0">
                 <div class="container">
                     <a th:href="@{/}" class="navbar-brand">[[#{aplicacion.titulo}]]</a>
                     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -26,15 +27,8 @@
                             <li class="nav-item px-2"><a class="nav-link" th:href="@{/restaurante/listado}">[[#{plantilla.restaurantes}]]</a></li>
                             <li class="nav-item px-2"><a class="nav-link" th:href="@{/tienda/listado}">[[#{plantilla.tiendas}]]</a></li>                           
                             <li class="nav-item dropdown" sec:authorize= "hasRole('ROLE_ADMIN')">
-                                <a class="nav-link dropdown-toggle" 
-                                   data-bs-toggle="dropdown" 
-                                   href="#" 
-                                   role="button" 
-                                   aria-expanded="false">[[#{plantilla.pruebas}]]</a>
                                 <ul class="dropdown-menu dropdown-menu-dark">
                                     <li><a class="dropdown-item" th:href="@{/usuario/listado}">[[#{plantilla.usuarios}]]</a></li>
-                                    <li><a class="dropdown-item"  th:href="@{/pruebas/listado}">[[#{plantilla.asociaciones}]]</a></li>
-                                    <li><a class="dropdown-item"  th:href="@{/pruebas/listado2}">[[#{plantilla.consultas}]]</a></li>
                                 </ul>
                             </li>
 
@@ -80,7 +74,7 @@
                     </div>
                 </div>
             </nav>
-            <section id="main-header" class="py-2 bg-success text-white">
+            <section id="main-header" class="py-2 text-white" style="background-color:#45b5c4"><!-- class="py-2 bg-success text-white" -->
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">
