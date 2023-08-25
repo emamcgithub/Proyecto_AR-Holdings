@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <!-- xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" -->
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>Ar-Holdings</title>
+    </head>
+    <body>
+
+        <!-- 1 Sección principal para mostrar la informaccion de los tienda en el index -->
+        <section th:fragment="listadoTiendas" id="tiendas">
+            <div class="container">
+                <div class="row row-cols-2" >
+                    <h2 class="inline">[[#{index.nuestrasTiendas}]]</h2>
+                    <div id="resultsBlock">                        
+                    </div>                        
+                </div>
+                <div class="row row-cols-3" 
+                     th:if="${tiendas != null and !tiendas.empty}">
+                    <div class="card" th:each="tienda : ${tiendas}">
+                        <div class="card-body">
+                            <h5 class="card-title">[[${tienda.nombre}]]</h5>
+                            <figure>
+                                <img th:src="@{${tienda.rutaImagen}}" height="200"/>
+
+                            </figure>
+                            <form>
+                                <input type="hidden" name="texto" th:value="${tienda.descripcion}"/>
+
+                            </form>
+
+                            <p class="card-text">[[${tienda.descripcion}]]</p>  
+                            <div id="map-container-google-1" style="height: 200px" class="z-depth-1-half map-container">
+                                <iframe th:src="@{${tienda.ubicacion}}" frameborder="0"
+                                        style="border:0" allow=fullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${tiendas == null or tiendas.empty}">
+                    [[#{tienda.no_mostrar}]]
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row row-cols-2" >
+                    <h2 class="inline">[[#{index.nuestrosRestaurantes}]]</h2>
+                    <div id="resultsBlock">                        
+                    </div>                        
+                </div>
+                <div class="row row-cols-3" 
+                     th:if="${restaurantes != null and !restaurantes.empty}">
+                    <div class="card" th:each="restaurante : ${restaurantes}">
+                        <div class="card-body">
+                            <h5 class="card-title">[[${restaurante.nombre}]]</h5>
+                            <figure>
+                                <img th:src="@{${restaurante.rutaImagen}}" height="200"/>
+
+                            </figure>
+                            <form>
+                                <input type="hidden" name="texto" th:value="${restaurante.descripcion}"/>
+
+                            </form>
+
+                            <p class="card-text">[[${restaurante.descripcion}]]</p> 
+                            <p class="card-text">[[${restaurante.telefono}]]</p> 
+                            <div id="map-container-google-1" style="height: 200px" class="z-depth-1-half map-container">
+                                <iframe th:src="@{${restaurante.ubicacion}}" frameborder="0"
+                                        style="border:0" allow=fullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${restaurantes == null or restaurantes.empty}">
+                    [[#{restaurante.no_mostrar}]]
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row row-cols-2" >
+                    <h2 class="inline">[[#{index.nuestrosPuestos}]]</h2>
+                    <div id="resultsBlock">                        
+                    </div>                        
+                </div>
+                <div class="row row-cols-3" 
+                     th:if="${puestos != null and !puestos.empty}">
+                    <div class="card" th:each="puestos : ${puestos}">
+                        <div class="card-body">
+                            <h5 class="card-title">[[${puestos.nombre}]]</h5>
+                            <figure>
+                                <img th:src="@{${puestos.rutaImagen}}" height="200"/>
+
+                            </figure>
+                            <form>
+                                <input type="hidden" name="texto" th:value="${puestos.requicitos}"/>
+                                <input type="hidden" name="texto" th:value="${puestos.descripcion}"/>
+                                <a th:href="@{/contacto/listado}"
+                                   class="btn btn-primary">
+                                    <i class="fas fa-phone"></i> [[#{accion.aplicar}]]</a>
+                            </form>
+
+                            <p class="card-text">[[${puestos.requicitos}]]</p> 
+                            <p class="card-text">[[${puestos.descripcion}]]</p>  
+
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${puestos == null or puestos.empty}">
+                    [[#{puestos.no_mostrar}]]
+                </div>
+            </div>
+
+
+        </section>
+    </body>
+</html>

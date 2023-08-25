@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+      <!-- xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" -->
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>Ar-Holdings</title>
+    </head>
+    <body>
+        <!-- 1 Sección para crear el boton de agregar... llamará a una ventana modal-->
+        <section th:fragment="botonesAgregar" class="py-4 mb-4 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3" sec:authorize="hasRole('ROLE_ADMIN')">   
+                        <button 
+                            type="button" 
+                            class="btn btn-primary btn-block" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#agregarPuestos">
+                            <i class="fas fa-plus"></i> [[#{puestos.agregar}]]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2 Fragmento para agregar puestos, es la ventana modal -->
+        <section th:fragment="agregarPuestos">
+            <div id="agregarPuestos" 
+                 class="modal fade" 
+                 tabindex="-1" 
+                 aria-labelledby="exampleModalLabel" 
+                 aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title">[[#{puestos.agregar}]]</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <form th:action="@{/puestos/guardar}" th:object="${puestos}"
+                              method="POST" class="was-validated" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <select class="form-select" aria-label="Default select example"
+                                            name="categoria.idCategoria">
+                                        <option th:each="categoria : ${categorias} "
+                                                th:value="${categoria.idCategoria}">[[${categoria.descripcion}]]</option>>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="nombre">[[#{puestos.nombre}]]</label>
+                                    <input type="text" class="form-control" name="nombre" required="true"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="turno">[[#{puestos.turno}]]</label>
+                                    <input type="text" class="form-control" name="turno" required="true"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="area">[[#{puestos.area}]]</label>
+                                    <input type="text" class="form-control" name="area" required="true"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="salario">[[#{puestos.salario}]]</label>
+                                    <input type="number" class="form-control" name="salario" required="true"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="requicitos">[[#{puestos.requicitos}]]</label>
+                                    <input type="text" class="form-control" name="requicitos" required="true"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="descripcion">[[#{puestos.descripcion}]]</label>
+                                    <input type="text" class="form-control" name="descripcion" required="true"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="rutaImagen">[[#{puestos.rutaImagen}]]</label>
+                                    <input class="form-control" type="file" name="imagenFile" onchange="readURL(this);"/>
+                                    <img id="blah" src="#" alt="your image" height="200"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="activo">[[#{puestos.activo}]]</label>
+                                    <input class="form-check-input" type="checkbox" name="activo" id="activo"/>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="submit">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Sección principal para mostrar la informaccion de la entidad puestos -->
+        <section th:fragment="listadoPuestos" id="puesto">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>[[#{puestos.listado}]]</h4>
+                            </div>
+                            <div th:if="${puestos != null and !puestos.empty}">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr><th>#</th>
+                                            <th>[[#{puestos.nombre}]]</th>
+                                            <th>[[#{puestos.turno}]]</th>
+                                            <th>[[#{puestos.area}]]</th>
+                                            <th>[[#{puestos.requicitos}]]</th>   
+                                            <th>[[#{puestos.descripcion}]]</th>  
+                                            <th>[[#{restaurante.activo}]]</th> 
+                                            <th sec:authorize="hasRole('ROLE_ADMIN')"></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="puestos, contador : ${puestos}">
+                                            <td>[[${contador.count}]]</td>
+                                            <td>[[${puestos.nombre}]]</td>
+                                            <td>[[${puestos.turno}]]</td>
+                                            <td>[[${puestos.area}]]</td>
+                                            <td>[[${puestos.requicitos}]]</td>
+                                            <td>[[${puestos.descripcion}]]</td>
+                                            <td th:text="${puestos.activo} ? 'Activa' : 'Inactiva'" />                                          
+                                            <td sec:authorize="hasRole('ROLE_ADMIN')">
+                                                <a th:href="@{/puestos/eliminar/}+${puestos.idPuesto}"
+                                                   class="btn btn-danger">
+                                                    <i class="fas fa-trash"></i> [[#{accion.eliminar}]]</a>
+                                                <a th:href="@{/puestos/modificar/}+${puestos.idPuesto}"
+                                                   class="btn btn-success">
+                                                    <i class="fas fa-pencil"></i> [[#{accion.actualizar}]]</a>
+                                                <a th:href="@{/contacto/listado}"
+                                                   class="btn btn-primary">
+                                                    <i class="fas fa-phone"></i> [[#{accion.aplicar}]]</a></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center p-2" th:if="${puestos == null or puestos.empty}">
+                                <span>[[#{lista.vacia}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center bg-secondary text-white mb-3">
+                            <div class="card-body">
+                                <h3>[[#{puestos.total}]]</h3>
+                                <h4 class="fs-2"><i class="fas fa-users"></i> [[${totalPuestos}]]</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4 Fragmento que se utiliza en la página modifca.html -->
+        <section th:fragment="editarPuestos">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <form method="POST"
+                          th:action="@{/puestos/guardar}" 
+                          th:object="${puestos}"
+                          class="was-validated"                          
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="idPuesto" th:field="*{idPuesto}"/>
+                        <input type="hidden" name="rutaImagen" th:field="*{rutaImagen}"/>
+                        <section th:replace="~{puestos/fragmentos :: botonesEditar}"/>
+                        <div id=details>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4>[[#{accion.actualizar}]]</h4>
+                                            </div>
+                                            <div class="card-body">
+
+                                                <div class="mb-3">
+                                                    <select class="form-select" aria-label="Default select example"
+                                                            name="idCategoria"
+                                                            th:field="*{categoria.idCategoria}">
+                                                        <option th:each="categoria : ${categorias} "
+                                                                th:value="${categoria.idCategoria}">[[${categoria.descripcion}]]</option>>
+                                                    </select>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="nombre">[[#{puestos.nombre}]]</label>
+                                                    <input type="text" class="form-control" 
+                                                           name="nombre" th:field="*{nombre}"
+                                                           required="true">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="turno">[[#{puestos.turno}]]</label>
+                                                    <input type="text" class="form-control" 
+                                                           name="turno" th:field="*{turno}"
+                                                           required="true">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="area">[[#{puestos.area}]]</label>
+                                                    <input type="text" class="form-control" 
+                                                           name="area" th:field="*{area}"
+                                                           required="true">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="salario">[[#{puestos.salario}]]</label>
+                                                    <input type="number" class="form-control" 
+                                                           name="salario" th:field="*{salario}"
+                                                           required="true">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="requicitos">[[#{puestos.requicitos}]]</label>
+                                                    <input type="text" class="form-control" 
+                                                           name="requicitos" th:field="*{requicitos}"
+                                                           required="true">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="descripcion">[[#{puestos.descripcion}]]</label>
+                                                    <input type="text" class="form-control" 
+                                                           name="descripcion" th:field="*{descripcion}"
+                                                           required="true">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="activo">[[#{puestos.activo}]]</label>
+                                                    <input class="form-check-input" 
+                                                           type="checkbox" 
+                                                           name="activo" 
+                                                           id="activo"
+                                                           th:field="*{activo}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="rutaI
+                                                           magen">[[#{puestos.rutaImagen}]]</label>
+                                                    <input class="form-control" type="file" name="imagenFile"
+                                                           onchange="readURL(this);" />
+                                                    <img id="blah" th:src="@{${puestos.rutaImagen}}" alt="your image" height="200"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5 Fragmento que se utiliza en el fragmento anterior -->
+        <section th:fragment="botonesEditar">
+            <div class="container py-4 mb-4 bg-light">
+                <div class="row">
+
+                    <div class="col-md-4 d-grid">
+                        <a th:href="@{/puestos/listado}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left"></i> [[#{accion.regresar}]]
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 d-grid">                                
+                        <a th:href="@{/puestos/eliminar/}+${puestos.idPuesto}"
+                           class="btn btn-danger">
+                            <i class="fas fa-trash"></i> [[#{accion.eliminar}]]
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check"></i> [[#{accion.guardar}]]
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
