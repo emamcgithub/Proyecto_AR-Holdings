@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <!-- xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" -->
+    <head th:replace="~{layout/plantilla :: head}">
+        <title>Ar-Holdings</title>
+    </head>
+    <body>
+
+        <!-- 3 Sección principal para mostrar la informaccion de la entidad contacto -->
+        <section th:fragment="listadoContacto" id="contacto">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>[[#{contacto.listado}]]</h4>
+                            </div>
+                            <div th:if="${contacto != null and !contacto.empty}">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr><th>#</th>
+                                            <th>[[#{contacto.nombre}]]</th>
+                                            <th>[[#{contacto.apellido1}]]</th>
+                                            <th>[[#{contacto.telefono}]]</th>
+                                            <th>[[#{contacto.correo}]]</th>
+                                            <th>[[#{restaurante.activo}]]</th>  
+                                            <th sec:authorize="hasRole('ROLE_ADMIN')"></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="contacto, contador : ${contacto}">
+                                            <td>[[${contador.count}]]</td>
+                                            <td>[[${contacto.nombre}]]</td>
+                                            <td>[[${contacto.apellido1}]]</td>
+                                            <td>[[${contacto.telefono}]]</td>
+                                            <td>[[${contacto.correo}]]</td>
+                                            <td th:text="${contacto.activo} ? 'Activa' : 'Inactiva'" />                                          
+                                            <td sec:authorize="hasRole('ROLE_ADMIN')">
+                                            </td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center p-2" th:if="${contacto == null or contacto.empty}">
+                                <span>[[#{lista.vacia}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center bg-secondary text-white mb-3">
+                            <div class="card-body">
+                                <h3>[[#{contacto.total}]]</h3>
+                                <h4 class="fs-2"><i class="fas fa-users"></i> [[${totalContacto}]]</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5 Fragmento que se utiliza en el fragmento anterior -->
+        <section th:fragment="botonesEditar">
+            <div class="container py-4 mb-4 bg-light">
+                <div class="row">
+
+                    <div class="col-md-4 d-grid">
+                        <a th:href="@{/contacto/listado}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left"></i> [[#{accion.regresar}]]
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 d-grid">                                
+                        <a th:href="@{/contacto/eliminar/}+${contacto.idContacto}"
+                           class="btn btn-danger">
+                            <i class="fas fa-trash"></i> [[#{accion.eliminar}]]
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check"></i> [[#{accion.guardar}]]
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
